@@ -1,0 +1,127 @@
+<%- include('../partials/header') %>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h2><i class="fa-solid fa-chart-line"></i> Provider Dashboard</h2>
+    <a href="/listings/create" class="btn btn-primary"><i class="fa-solid fa-plus"></i> New Listing</a>
+</div>
+
+<div class="dashboard-stats">
+    <div class="glass-card stat-card">
+        <h3>Total Active Listings</h3>
+        <p class="value"><%= totalListings %></p>
+    </div>
+    <div class="glass-card stat-card">
+        <h3>Total Bookings Received</h3>
+        <p class="value"><%= totalBookings %></p>
+    </div>
+    <div class="glass-card stat-card">
+        <h3>Total Earnings (Confirmed)</h3>
+        <p class="value" style="color: var(--success);">$<%= totalEarnings.toFixed(2) %></p>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+    <div class="glass-card" style="padding: 1.5rem;">
+        <h3 style="margin-bottom: 1.5rem; color: var(--text-muted);">Recent Bookings</h3>
+        <div style="overflow-x: auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Listing</th>
+                        <th>Guest</th>
+                        <th>Dates</th>
+                        <th>Status</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if(bookings && bookings.length > 0) { %>
+                        <% bookings.forEach(b => { %>
+                            <tr>
+                                <td><%= b.listing ? b.listing.title : 'Deleted Listing' %></td>
+                                <td><%= b.user ? b.user.name : 'Unknown User' %></td>
+                                <td><%= new Date(b.checkIn).toLocaleDateString() %> - <%= new Date(b.checkOut).toLocaleDateString() %></td>
+                                <td><span class="badge badge-<%= b.status %>"><%= b.status %></span></td>
+                                <td style="font-weight: 600;">$<%= b.totalPrice.toFixed(2) %></td>
+                            </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 2rem;">No bookings yet!</td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Analytics Chart -->
+    <div class="glass-card" style="padding: 1.5rem;">
+        <h3 style="margin-bottom: 1.5rem; color: var(--text-muted);">Earnings Overview</h3>
+        <canvas id="earningsChart"></canvas>
+    </div>
+</div>
+
+<section style="margin-top: 3rem;">
+    <h3 style="margin-bottom: 1.5rem;">My Properties</h3>
+    <div class="grid">
+        <% if(listings && listings.length > 0) { %>
+            <% listings.forEach(listing => { %>
+                <div class="listing-card">
+                    <% if(listing.images && listing.images.length > 0) { %>
+                        <img src="<%= listing.images[0] %>" alt="<%= listing.title %>" class="listing-image" style="height: 150px;">
+                    <% } else { %>
+                        <div class="listing-image" style="height: 150px; background: #334155; display: flex; align-items: center; justify-content: center;">
+                            <i class="fa-solid fa-image fa-2x"></i>
+                        </div>
+                    <% } %>
+                    <div class="listing-body">
+                        <h4 style="margin-bottom: 0.5rem;"><%= listing.title %></h4>
+                        <p style="color: var(--text-muted); font-size: 0.9rem;"><i class="fa-solid fa-location-dot"></i> <%= listing.location %></p>
+                        
+                        <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                            <a href="/listings/<%= listing._id %>" class="btn btn-outline" style="padding: 0.3rem 0.8rem; font-size: 0.8rem;">View</a>
+                            <a href="/listings/<%= listing._id %>/edit" class="btn btn-primary" style="padding: 0.3rem 0.8rem; font-size: 0.8rem;">Edit</a>
+                            <form action="/listings/<%= listing._id %>?_method=DELETE" method="POST" style="margin: 0; display: inline;">
+                                <button type="submit" class="btn btn-danger" style="padding: 0.3rem 0.8rem; font-size: 0.8rem;"><i class="fa-solid fa-trash"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
+        <% } else { %>
+            <p style="color: var(--text-muted);">You haven't listed any properties yet.</p>
+        <% } %>
+    </div>
+</section>
+
+<!-- Initialize Chart.js safely -->
+<% if (typeof bookings !== 'undefined') { %>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const ctx = document.getElementById('earningsChart').getContext('2d');
+        
+        // Very basic aggregation for demo purposes (Status Confirmed)
+        let confirmed = <%= bookings.filter(b => b.status === "confirmed").length %>;
+        let cancelled = <%= bookings.filter(b => b.status === "cancelled").length %>;
+
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Confirmed', 'Cancelled'],
+                datasets: [{
+                    data: [confirmed, cancelled],
+                    backgroundColor: ['rgba(16, 185, 129, 0.8)', 'rgba(239, 68, 68, 0.8)'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                cutout: '70%',
+                plugins: { legend: { position: 'bottom', labels: { color: '#f8fafc' } } }
+            }
+        });
+    });
+</script>
+<% } %>
+
+<%- include('../partials/footer') %>

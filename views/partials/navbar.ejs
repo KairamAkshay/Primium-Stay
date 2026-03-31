@@ -1,0 +1,26 @@
+<nav class="navbar">
+    <a href="/" class="nav-brand">
+        <i class="fa-solid fa-house-chimney"></i> Luxe<span>Stays</span>
+    </a>
+    
+    <div class="nav-links">
+        <a href="/listings">Explore</a>
+        
+        <% if(user) { %>
+            <% if(user.role === 'provider' || user.role === 'admin') { %>
+                <a href="/dashboard">Dashboard</a>
+            <% } %>
+            <% if(user.role === 'user' || user.role === 'admin') { %>
+                <a href="/bookings">My Bookings</a>
+            <% } %>
+            <% if(user.role === 'admin') { %>
+                <a href="/users">Users</a>
+            <% } %>
+            <a href="/profile"><i class="fa-solid fa-user"></i> <%= user.name %></a>
+            <a href="/auth/logout" class="btn btn-outline" style="padding: 0.3rem 1rem;">Logout</a>
+        <% } else { %>
+            <a href="/auth/login" class="btn btn-outline">Log In</a>
+            <a href="/auth/register" class="btn btn-primary">Register</a>
+        <% } %>
+    </div>
+</nav>

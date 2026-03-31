@@ -1,0 +1,62 @@
+<%- include('../partials/header') %>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h2><i class="fa-solid fa-map-location-dot"></i> Explore Listings</h2>
+    <form action="/listings" method="GET" class="search-container" style="margin: 0;">
+        <input type="text" name="search" placeholder="Search locations or titles..." value="<%= query.search || '' %>" class="form-control" style="background: rgba(0,0,0,0.2); border: none; padding: 0.5rem 1rem;">
+        <button type="submit" class="btn btn-primary" style="padding: 0.5rem 1rem;"><i class="fa-solid fa-search"></i></button>
+        <% if(query.search || query.minPrice || query.maxPrice) { %>
+            <a href="/listings" class="btn btn-outline" style="padding: 0.5rem 1rem;"><i class="fa-solid fa-xmark"></i> Clear</a>
+        <% } %>
+    </form>
+</div>
+
+<div class="grid">
+    <% if(listings && listings.length > 0) { %>
+        <% listings.forEach(listing => { %>
+            <a href="/listings/<%= listing._id %>" style="text-decoration: none; color: inherit;">
+                <div class="listing-card">
+                    <% if(listing.images && listing.images.length > 0) { %>
+                        <img src="<%= listing.images[0] %>" alt="<%= listing.title %>" class="listing-image">
+                    <% } else { %>
+                        <div class="listing-image" style="background: #334155; display: flex; align-items: center; justify-content: center;">
+                            <i class="fa-solid fa-image fa-3x" style="color: var(--text-muted);"></i>
+                        </div>
+                    <% } %>
+                    <div class="listing-body">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <h3 class="listing-title" style="margin-bottom: 0.2rem;"><%= listing.title %></h3>
+                            <p class="listing-price" style="margin: 0;">$<%= listing.price %></p>
+                        </div>
+                        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 0.8rem;">
+                            <i class="fa-solid fa-location-dot"></i> <%= listing.location %>
+                        </p>
+                        
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <% listing.amenities.slice(0,3).forEach(amenity => { %>
+                                <span style="background: rgba(59, 130, 246, 0.1); color: var(--primary); padding: 0.2rem 0.6rem; border-radius: 999px; font-size: 0.75rem; font-weight: 500;">
+                                    <%= amenity %>
+                                </span>
+                            <% }) %>
+                            <% if(listing.amenities.length > 3) { %>
+                                <span style="background: rgba(255, 255, 255, 0.05); color: var(--text-muted); padding: 0.2rem 0.6rem; border-radius: 999px; font-size: 0.75rem;">+<%= listing.amenities.length - 3 %></span>
+                            <% } %>
+                        </div>
+                        
+                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.05); font-size: 0.85rem; color: var(--text-muted);">
+                            Host: <%= listing.provider.name %>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        <% }) %>
+    <% } else { %>
+        <div style="grid-column: 1 / -1; text-align: center; padding: 4rem; color: var(--text-muted); background: var(--bg-card); border-radius: 16px;">
+            <i class="fa-solid fa-magnifying-glass fa-3x" style="margin-bottom: 1rem; opacity: 0.5;"></i>
+            <h3>No listings found</h3>
+            <p>Try adjusting your search criteria or check back later.</p>
+        </div>
+    <% } %>
+</div>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,25 @@
+<%- include('../partials/header') %>
+
+<div class="auth-container glass-card" style="margin-top: 5rem;">
+    <h2 style="text-align: center; margin-bottom: 2rem; font-size: 2rem; color: var(--primary);">Welcome Back</h2>
+    
+    <form action="/auth/login" method="POST">
+        <div class="form-group">
+            <label class="form-label" for="email">Email Address</label>
+            <input type="email" id="email" name="email" class="form-control" required placeholder="Enter your email">
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label" for="password">Password</label>
+            <input type="password" id="password" name="password" class="form-control" required placeholder="Enter your password">
+        </div>
+        
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.8rem; font-size: 1.1rem; margin-top: 1rem;">Log In</button>
+    </form>
+    
+    <p style="text-align: center; margin-top: 2rem; color: var(--text-muted);">
+        Don't have an account? <a href="/auth/register" style="color: var(--primary); font-weight: 500;">Register Here</a>
+    </p>
+</div>
+
+<%- include('../partials/footer') %>

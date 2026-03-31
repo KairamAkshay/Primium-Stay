@@ -1,0 +1,51 @@
+<%- include('../partials/header') %>
+
+<section class="hero" style="text-align: center; padding: 4rem 0 6rem 0;">
+    <h1 style="font-size: 3.5rem; margin-bottom: 1.5rem; font-weight: 700; line-height: 1.2;">
+        Find Your Next <span style="background: linear-gradient(to right, var(--primary), var(--accent)); -webkit-background-clip: text; color: transparent;">Perfect Stay</span>
+    </h1>
+    <p style="font-size: 1.2rem; color: var(--text-muted); max-width: 600px; margin: 0 auto 3rem auto;">
+        Discover luxury rentals, cozy cabins, and breathtaking properties from verified providers worldwide.
+    </p>
+
+    <form action="/listings" method="GET" class="search-container" style="max-width: 800px; margin: 0 auto;">
+        <input type="text" name="search" placeholder="Where do you want to go?" class="form-control" style="flex: 2; border: none; background: rgba(0,0,0,0.3); font-size: 1.1rem;">
+        <input type="number" name="minPrice" placeholder="Min Price" class="form-control" style="flex: 1; border: none; background: rgba(0,0,0,0.3);">
+        <input type="number" name="maxPrice" placeholder="Max Price" class="form-control" style="flex: 1; border: none; background: rgba(0,0,0,0.3);">
+        <button type="submit" class="btn btn-primary" style="padding: 0.8rem 2rem; font-size: 1.1rem;">
+            <i class="fa-solid fa-magnifying-glass"></i> Search
+        </button>
+    </form>
+</section>
+
+<section>
+    <h2 style="font-size: 2rem; margin-bottom: 2rem;">Featured Properties</h2>
+    <div class="grid">
+        <% if(listings && listings.length > 0) { %>
+            <% listings.forEach(listing => { %>
+                <a href="/listings/<%= listing._id %>" style="text-decoration: none; color: inherit;">
+                    <div class="listing-card">
+                        <% if(listing.images && listing.images.length > 0) { %>
+                            <img src="<%= listing.images[0] %>" alt="<%= listing.title %>" class="listing-image">
+                        <% } else { %>
+                            <div class="listing-image" style="background: #334155; display: flex; align-items: center; justify-content: center; color: var(--text-muted);">
+                                <i class="fa-solid fa-image fa-3x"></i>
+                            </div>
+                        <% } %>
+                        <div class="listing-body">
+                            <h3 class="listing-title"><%= listing.title %></h3>
+                            <p style="color: var(--text-muted); margin-bottom: 0.5rem;">
+                                <i class="fa-solid fa-location-dot"></i> <%= listing.location %>
+                            </p>
+                            <p class="listing-price">$<%= listing.price %> <span style="font-size:0.9rem; font-weight: 400; color:var(--text-muted);">/ night</span></p>
+                        </div>
+                    </div>
+                </a>
+            <% }) %>
+        <% } else { %>
+            <p style="color: var(--text-muted);">No listings available currently. Check back later!</p>
+        <% } %>
+    </div>
+</section>
+
+<%- include('../partials/footer') %>
