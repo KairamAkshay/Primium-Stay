@@ -1,4 +1,4 @@
-# Premium Stay
+# Primium Stay
 
 Premium Stay is a full-stack rental marketplace web application, designed to provide a premium and dynamic user experience similar to platforms like Airbnb. 
 
